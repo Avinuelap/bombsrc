@@ -32,10 +32,11 @@ public class Bomb {
 		if ((System.currentTimeMillis() <= explosionTime+1000) && (explosion ==true)) {
 			/////////////// Starting explosions //////////////////////////////////////////////////
 			//Center
-			board.gb_setSquareImage(xBomb, yBomb, cAnimation());
+			//board.gb_setSquareImage(xBomb, yBomb, cAnimation());
 			
 			
 			for (int i = 1; i <= this.range; i++) {
+				board.gb_setSquareImage(xBomb, yBomb, cAnimation());
 				//Right
 				if ((thisBoard.getBrickArray()[xBomb+1][yBomb]!=2)) { 	//Will stop if there is a wall	
 					if (xBomb+i<MainFP.SIZE-1) {

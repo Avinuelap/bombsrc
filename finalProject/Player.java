@@ -6,18 +6,15 @@ import edu.uc3m.game.GameBoardGUI;
 //AÑADIR IF COMPROBANDO SI CAMBIA DE CASILLA (MULTIPLO DE 10)
 public class Player {
 	private int score;
-	private Bomb[] bombs = new Bomb[10];
-	private Bomb bomb = new Bomb();
+	private Bomb[] bombs = new Bomb[100];
 	private int health = 100;
 	private int speed = 2;
 	private int x1 = 10 , y1 = 10; 	
-	private int maxBombs = 1;					//Max bombs
+	private int maxBombs = 89;					//Max bombs
 	private int currBombs = 0; 					//Number of bombs on board
 
 	int counter = 1;   							//Animation sprite counter
 	String lastAction = "down"; 				//will be used in the animation loop for the player's movement. Initially down.
-	//	int []xExp = new int [10];					//Used for explosions
-	//	int []yExp = new int [10];					//Used for explosions
 	boolean alive = true;
 
 	public Player (GameBoardGUI board) throws Throwable {
@@ -31,15 +28,12 @@ public class Player {
 
 		Block thisBoard = new Block(board);
 
-		for (int i=0; i<10; i++) {
+		for (int i=0; i<100; i++) {
 			bombs[i] = new Bomb();					//Initializing each element of the bomb array
 		}
-		//		long [] deployTime = new long [10];			//Used for bomb detonation timings
-		//		long [] explosionTime = new long [10];		//Used for bomb detonation animations		
-		//		boolean [] placedBomb = new boolean [10];	//Will be true if there are bombs on board
-		//		boolean [] explosion = new boolean [10];	//Will be true if an explosion is happening
+
 		int bombCounter = 1;						//Amount of bombs available
-		for (int i=1; i<10; i++) {
+		for (int i=1; i<100; i++) {
 			board.gb_addSprite(i, "bomb1.gif", true);	//Add bombs to the board
 		}
 
