@@ -3,156 +3,192 @@ package finalProject;
 import edu.uc3m.game.GameBoardGUI;
 
 public class Bomb {
-	//private byte amount;
-	private byte range = 1;
-	private int x2, y2;			//Bomb coordinates on the board
-	private byte number = 2;
+	private byte range = 3;
+	private int xBomb, yBomb;			//Bomb coordinates on the board
+	private int xExp, yExp;				//Coordinates for the explosion
+	private long deployTime;
+	private long explosionTime;
+	private boolean placedBomb;
+	private boolean explosion;
+	////////////////////////////////////////////////////////////
 	
 	int bombCounter = 1;	//Used in bomb sprite animation
 	int expCounter = 1;		//Used in explosion animation
 	
 	public Bomb () {
-		getBombCounter();
-		setBombSprite();
-		setPosition(x2, y2);
-		getXBomb();
-		getYBomb();
+//		//Setters:
+//		setBombSprite();
+//		setPosition(xBomb, yBomb);
+//		setExpPosition(xExp, yExp);
+//		//setCurrExplosion();
+//		
+//		//Getters
+//		getXBomb();
+//		getYBomb();
 	}
 	
-	
-	public byte getBombCounter() {
-		return this.number;
-	}
-	
-
-
 	//Method for explosions:
-	public void setExplosion(GameBoardGUI board, int x2, int y2, long explosionTime, boolean explosion, Block thisBoard) {	
+	public void setExplosion(GameBoardGUI board, int xBomb, int yBomb, long explosionTime, boolean explosion, Block thisBoard) {	
 		if ((System.currentTimeMillis() <= explosionTime+1000) && (explosion ==true)) {
-/////////////// Starting explosions //////////////////////////////////////////////////
+			/////////////// Starting explosions //////////////////////////////////////////////////
 			//Center
-			board.gb_setSquareImage(x2, y2, cAnimation());
-
-			//Right
+			board.gb_setSquareImage(xBomb, yBomb, cAnimation());
+			
+			
 			for (int i = 1; i <= this.range; i++) {
-				if (thisBoard.getBrickArray()[x2+i][y2]==2) {
-					break;		//Will stop if there is a wall
-				}
-				else if (i!=this.range) {
-					board.gb_setSquareImage(x2+i, y2, xAnimation());
-				} else	{
-					board.gb_setSquareImage(x2+i, y2, rAnimation());	
-				}
-
-			}
-			//Left
-			for (int i = 1; i <= this.range; i++) {
-				if (thisBoard.getBrickArray()[x2-i][y2]==2) {
-					break;		//Will stop if there is a wall
-				}
-				if (i!=this.range) {
-					board.gb_setSquareImage(x2-i, y2, xAnimation());
-				} else	{
-					board.gb_setSquareImage(x2-i, y2, lAnimation());	
+				//Right
+				if ((thisBoard.getBrickArray()[xBomb+1][yBomb]!=2)) { 	//Will stop if there is a wall	
+					if (xBomb+i<MainFP.SIZE-1) {
+						if (i!=this.range) {
+							board.gb_setSquareImage(xBomb+i, yBomb, xAnimation());
+						} else	{
+							board.gb_setSquareImage(xBomb+i, yBomb, rAnimation());	
+						}
+					}
 				}
 
-			}
+				//Left
+				if ((thisBoard.getBrickArray()[xBomb-1][yBomb]!=2)) { 	//Will stop if there is a wall
+					if (xBomb-i>0) {
+						if (i!=this.range) {
+							board.gb_setSquareImage(xBomb-i, yBomb, xAnimation());
+						} else	{
+							board.gb_setSquareImage(xBomb-i, yBomb, lAnimation());	
+						}
+					}
+				}
+				//Up
 
-			//Up
-			for (int i = 1; i <= this.range; i++) {
-				if (thisBoard.getBrickArray()[x2][y2-i]==2) {
-					break;		//Will stop if there is a wall
+				if ((thisBoard.getBrickArray()[xBomb][yBomb-1]!=2)) {	//Will stop if there is a wall	
+					if (yBomb-i>0) {
+						if (i!=this.range) {
+							board.gb_setSquareImage(xBomb, yBomb-i, yAnimation());
+						} else	{
+							board.gb_setSquareImage(xBomb, yBomb-i, tAnimation());	
+						}
+					}
 				}
-				if (i!=this.range) {
-					board.gb_setSquareImage(x2, y2-i, yAnimation());
-				} else	{
-					board.gb_setSquareImage(x2, y2-i, tAnimation());	
-				}
-			}
+				//Down
 
-			//Down
-			for (int i = 1; i <= this.range; i++) {
-				if (thisBoard.getBrickArray()[x2][y2+i]==2) {
-					break;		//Will stop if there is a wall
-				}
-				if (i!=this.range) {
-					board.gb_setSquareImage(x2, y2+i, yAnimation());
-				} else	{
-					board.gb_setSquareImage(x2, y2+i, dAnimation());	
-				}
+				if ((thisBoard.getBrickArray()[xBomb][yBomb+1]!=2)) {
+					if (yBomb+i<MainFP.SIZE-1) {
+						if (i!=this.range) {
+							board.gb_setSquareImage(xBomb, yBomb+i, yAnimation());
+						} else	{
+							board.gb_setSquareImage(xBomb, yBomb+i, dAnimation());	
+						}
+					}
+				}		
 			}
 
 		}else {		
 ////////////// Ending explosions /////////////////////////////////////////////////////
 			//Center
-			board.gb_setSquareImage(x2, y2, null);
+			board.gb_setSquareImage(xBomb, yBomb, null);
 
-			//Right
+			
 			for (int i = 1; i <= this.range; i++) {
-				if (thisBoard.getBrickArray()[x2+i][y2]==2) {
-					break;
+				//Right
+				if (xBomb+i<MainFP.SIZE-1) {
+					if (thisBoard.getBrickArray()[xBomb+1][yBomb]!=2) {
+						board.gb_setSquareImage(xBomb+ i, yBomb, null);
+						if (thisBoard.getBrickArray()[xBomb+i][yBomb]==1) {
+							thisBoard.getBrickArray()[xBomb+i][yBomb]=0;
+						}
+					}
 				}
 
-				board.gb_setSquareImage(x2+ i, y2, null);
-				if (thisBoard.getBrickArray()[x2+i][y2]==1) {
-					thisBoard.getBrickArray()[x2+i][y2]=0;
+				//Left
+				if (xBomb-i>0) {
+					if (thisBoard.getBrickArray()[xBomb-1][yBomb]!=2) {
+						board.gb_setSquareImage(xBomb- i, yBomb, null);
+						if (thisBoard.getBrickArray()[xBomb-i][yBomb]==1) {
+							thisBoard.getBrickArray()[xBomb-i][yBomb]=0;
+
+						}
+					}
 				}
-			}
-			//Left
-			for (int i = 1; i <= this.range; i++) {
-				if (x2-i >0) {
-					if (thisBoard.getBrickArray()[x2-i][y2]==2) {
-						break;
-					}		
-					board.gb_setSquareImage(x2- i, y2, null);
-					if (thisBoard.getBrickArray()[x2-i][y2]==1) {
-						thisBoard.getBrickArray()[x2-i][y2]=0;
+
+				//Up
+				if (yBomb-i>0) {
+					if (thisBoard.getBrickArray()[xBomb][yBomb-i]!=2) {					
+						board.gb_setSquareImage(xBomb, yBomb-i, null);
+						if (thisBoard.getBrickArray()[xBomb][yBomb-i]==1) {
+							thisBoard.getBrickArray()[xBomb][yBomb-i]=0;
+						}
+					}
+				}	
+				
+				//Down
+				if (yBomb+i<MainFP.SIZE-1) {
+					if (thisBoard.getBrickArray()[xBomb][yBomb+1]!=2) {	
+						board.gb_setSquareImage(xBomb, yBomb+i, null);
+						if (thisBoard.getBrickArray()[xBomb][yBomb+i]==1) {
+							thisBoard.getBrickArray()[xBomb][yBomb+i]=0;
+						}
 					}
 				}
 			}
-			
-			//Up
-			for (int i = 1; i <= this.range; i++) {
-				if (y2-i >0) {
-					if (thisBoard.getBrickArray()[x2][y2-i]==2) {
-						break;
-					}		
-					board.gb_setSquareImage(x2, y2-i, null);
-					if (thisBoard.getBrickArray()[x2][y2-i]==1) {
-						thisBoard.getBrickArray()[x2][y2-i]=0;
-					}
-				}
-			}
-			
-			//Down
-			for (int i = 1; i <= this.range; i++) {
-				if (y2+i >0) {
-					if (thisBoard.getBrickArray()[x2][y2+i]==2) {
-						break;
-					}		
-					board.gb_setSquareImage(x2, y2+i, null);
-					if (thisBoard.getBrickArray()[x2][y2+i]==1) {
-						thisBoard.getBrickArray()[x2][y2+i]=0;
-					}
-				}
-			}
-			
-			explosion=false;
-		}
+		}	
+		explosion=false;
 	}
+
 	
-	//Method storing bomb position:
-	public void setPosition(int x2, int y2) {
-		this.x2 = x2;
-		this.y2 = y2;
+	//Methods for fields:
+	//1. Bomb position:
+	public void setPosition(int xBomb, int yBomb) {
+		this.xBomb = xBomb;
+		this.yBomb = yBomb;
 	}
-	
-	//Receiving position:
+
 	public int getXBomb() {
-		return this.x2;
+		return this.xBomb;
 	}
 	public int getYBomb(){
-		return this.y2;
+		return this.yBomb;
+	}
+	
+	//2. Explosion position
+	public void setExpPosition(int xExp, int yExp) {
+		this.xExp = xExp;
+		this.yExp = yExp;
+	}
+	
+	public int getXExp() {
+		return this.xExp;
+	}
+	public int getYExp(){
+		return this.yExp;
+	}
+	
+	//3. Timers
+	public void setDeployTime(long dTime) {
+		this.deployTime = dTime;
+	}
+	public void setExpTime(long expTime) {
+		this.explosionTime = expTime;
+	}
+	
+	public long getDeployTime() {
+		return this.deployTime;
+	}
+	public long getExpTime(){
+		return this.explosionTime;
+	}
+	
+	//4. Booleans: deployed bomb and explosion happening:
+	public void setPlacedBomb(boolean pBomb) {
+		this.placedBomb = pBomb;
+	}
+	public void setCurrExplosion(boolean exp) {
+		this.explosion = exp;
+	}
+	
+	public boolean getPlacedBomb() {
+		return this.placedBomb;
+	}
+	public boolean getCurrExplosion(){
+		return this.explosion;
 	}
 	
 	/////////////////Methods for animations:
