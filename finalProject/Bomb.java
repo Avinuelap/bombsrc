@@ -3,7 +3,7 @@ package finalProject;
 import edu.uc3m.game.GameBoardGUI;
 
 public class Bomb {
-	private byte range = 3;
+	private byte range = 1;
 	private int xBomb, yBomb;			//Bomb coordinates on the board
 	private int xExp, yExp;				//Coordinates for the explosion
 	private long deployTime;
@@ -112,7 +112,7 @@ public class Bomb {
 
 				//Up
 				if (yBomb-i>0) {
-					if (thisBoard.getBrickArray()[xBomb][yBomb-i]!=2) {					
+					if (thisBoard.getBrickArray()[xBomb][yBomb-1]!=2) {					
 						board.gb_setSquareImage(xBomb, yBomb-i, null);
 						if (thisBoard.getBrickArray()[xBomb][yBomb-i]==1) {
 							thisBoard.getBrickArray()[xBomb][yBomb-i]=0;

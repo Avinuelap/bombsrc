@@ -31,6 +31,11 @@ public class Player {
 		for (int i=0; i<100; i++) {
 			bombs[i] = new Bomb();					//Initializing each element of the bomb array
 		}
+		
+		for (int i=0; i<17; i++) {
+			for (int ii=0; ii<17; ii++) {
+			System.out.print("[" + thisBoard.getBonusArray()[i][ii] + "] ");
+			}System.out.println();;}
 
 		int bombCounter = 1;						//Amount of bombs available
 		for (int i=1; i<100; i++) {
@@ -95,9 +100,6 @@ public class Player {
 					board.gb_setSpriteVisible(bombCounter, true);
 					bombs[bombCounter].setDeployTime(System.currentTimeMillis()); 
 					bombs[bombCounter].setPlacedBomb(true);
-					//					for (int i=0; i<10; i++) {
-					//						board.gb_println(deployTime[i] + "  ");
-					//					}
 					board.gb_println("Bomb placed in [" + bombs[bombCounter].getXBomb() + " , " + bombs[bombCounter].getYBomb() + "]");
 					bombCounter++;
 					currBombs++;
@@ -111,7 +113,7 @@ public class Player {
 			board.gb_moveSpriteCoord(0, x1, y1);
 
 			//Bomb animation
-			for (int i=1; i<10; i++) {
+			for (int i=1; i<50; i++) {
 				board.gb_setSpriteImage(i, bombs[i].setBombSprite());		
 			}		
 
