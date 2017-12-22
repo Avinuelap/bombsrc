@@ -1,22 +1,25 @@
 package finalProject;
 
-import org.omg.Messaging.SyncScopeHelper;
-
 import edu.uc3m.game.GameBoardGUI;
 //AÑADIR IF COMPROBANDO SI CAMBIA DE CASILLA (MULTIPLO DE 10)
 public class Player {
 	private int score;
 	private Bomb[] bombs = new Bomb[100];
 	private int health = 100;
-	private int speed = 2;
+	private int maxHealth = 100;
+	private int speed = 1;
 	private int x1 = 10 , y1 = 10; 	
-	private int maxBombs = 89;					//Max bombs
-	private int currBombs = 0; 					//Number of bombs on board
-
-	int counter = 1;   							//Animation sprite counter
-	String lastAction = "down"; 				//will be used in the animation loop for the player's movement. Initially down.
+	private int maxBombs = 100;						//Max bombs
+	private int currBombs = 0; 						//Number of bombs on board
+	private boolean remoteControl = true; 			//Will be true if a remote control has been taken
+	private Enemy[] enemies;
+	//TODO añadir enemies
+	
+	int counter = 1;   								//Animation sprite counter
+	String lastAction = "down"; 					//Will be used in the animation loop for the player's movement. Initially down.
 	boolean alive = true;
-
+	boolean doorOpen = false;
+	int bombRange = 1;								//Used to change bomb's range when bonus is taken
 	public Player (GameBoardGUI board) throws Throwable {
 		run (board);
 	}
@@ -25,31 +28,43 @@ public class Player {
 	public void run (GameBoardGUI board) throws Throwable {
 
 		board.gb_setValueHealthMax(this.health);
-
+		board.gb_setValueLevel(MainFP.level);
+		board.gb_setTextAbility1("Speed");
+		board.gb_setTextAbility2("Range:");
+		board.gb_setTextPointsUp("Score:");
+		board.gb_setTextPointsDown("Bombs:");
+				
 		Block thisBoard = new Block(board);
+		
+		//Set number of enemies		
+		int maxEnemyNumber = (int)(Math.random()*10)+1;			//Between 0 and 11
+		int enemyNumber = 0;									//Current number
+			for (int i=0; i<maxEnemyNumber; i++) {
+				enemies[i] = new Enemy();	
+				enemies[i].setEnemies(board, thisBoard);
+		}
 
 		for (int i=0; i<100; i++) {
-			bombs[i] = new Bomb();					//Initializing each element of the bomb array
+			bombs[i] = new Bomb();						//Initializing each element of the bomb array
+		}
+
+		int bombCounter = 1;							//Amount of bombs available
+		for (int i=1; i<100; i++) {
+			board.gb_addSprite(i, "bomb1.gif", false);	//Add bombs to the board
 		}
 		
-		for (int i=0; i<17; i++) {
-			for (int ii=0; ii<17; ii++) {
-			System.out.print("[" + thisBoard.getBonusArray()[i][ii] + "] ");
-			}System.out.println();;}
-
-		int bombCounter = 1;						//Amount of bombs available
-		for (int i=1; i<100; i++) {
-			board.gb_addSprite(i, "bomb1.gif", true);	//Add bombs to the board
-		}
-
+		
 		///////////////////// MAIN LOOP ///////////////////////
 		do {
+			board.gb_setValueAbility1(this.speed);
+			board.gb_setValueAbility2(bombRange);
+			board.gb_setValueHealthCurrent(this.health);
+			board.gb_setValuePointsUp(this.score);
+			board.gb_setValuePointsDown(this.maxBombs - this.currBombs);
+			
 			String newMovement = board.gb_getLastAction().trim();
 			switch (newMovement){
 			case "right": 	
-				//				board.gb_println("Cell: [" + Math.min((((x1 + 4) / 10)), MainFP.SIZE)+ "] [" + Math.min((((y1 + 8) / 10)), MainFP.SIZE) + "]") ;
-				//						board.gb_println("Going to [" + (Math.min((((x1 + 4) / 10)), MainFP.SIZE)+1)+ "] [" + Math.min((((y1 + 8) / 10)), MainFP.SIZE) + "]");
-				//						board.gb_println(x1 + ", " + y1);
 				if(x1%10==0) {
 					x1+=speed;
 				}else {
@@ -59,9 +74,6 @@ public class Player {
 				}	break;
 
 			case "left": 
-				//				board.gb_println("Cell: [" + Math.min((((x1 + 4) / 10)), MainFP.SIZE)+ "] [" + Math.min((((y1 + 8) / 10)), MainFP.SIZE) + "]") ;
-				//			board.gb_println("Going to [" + (Math.min((((x1 + 5) / 10)), MainFP.SIZE)-1)+ "] [" + Math.min((((y1 + 8) / 10)), MainFP.SIZE) + "]");
-				//			board.gb_println(x1 + ", " + y1);
 				if(x1%10==0) {
 					x1-=speed;
 				}else	{
@@ -71,21 +83,15 @@ public class Player {
 				}	break;
 
 			case "down": 
-				//				board.gb_println("Cell: [" + Math.min((((x1 + 4) / 10)), MainFP.SIZE)+ "] [" + Math.min((((y1 + 8) / 10)), MainFP.SIZE) + "]") ;
-				//			board.gb_println("Going to [" + (Math.min((((x1 + 5) / 10)), MainFP.SIZE))+ "] [" + (Math.min((((y1 + 8) / 10)), MainFP.SIZE)+1) + "]");
-				//			board.gb_println(x1 + ", " + y1);
 				if (y1%10!=0) {
 					y1+=speed;
 				} else	{
-					if (thisBoard.getBrickArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)][(Math.min((((y1 + 4) / 10)), MainFP.SIZE))+1] == 0) {
+					if (thisBoard.getBrickArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)][(Math.min((((y1 + 6) / 10)), MainFP.SIZE))+1] == 0) {
 						y1+=speed;
 					}
 				}	break;
 
 			case "up":
-				//				board.gb_println("Cell: [" + Math.min((((x1 + 4) / 10)), MainFP.SIZE)+ "] [" + Math.min((((y1 + 8) / 10)), MainFP.SIZE) + "]") ;
-				//			board.gb_println("Going to [" + (Math.min((((x1 + 5) / 10)), MainFP.SIZE))+ "] [" + (Math.min((((y1 + 8) / 10)), MainFP.SIZE)-1) + "]");
-				//			board.gb_println(x1 + ", " + y1);
 				if (y1%10==0) {
 					y1-=speed;
 				} else	{
@@ -93,8 +99,9 @@ public class Player {
 						y1-=speed;
 					}
 				}	break;
+				
 			case "space": 
-				if (currBombs<=maxBombs) {
+				if (currBombs<maxBombs) {
 					bombs[bombCounter].setPosition(Math.min(((x1 + 4) / 10), MainFP.SIZE), Math.min((((y1 + 8) / 10)), MainFP.SIZE));
 					board.gb_moveSprite(bombCounter, bombs[bombCounter].getXBomb(), bombs[bombCounter].getYBomb());
 					board.gb_setSpriteVisible(bombCounter, true);
@@ -118,28 +125,80 @@ public class Player {
 			}		
 
 			//Bomb explosion
-			for (int i=0 ; i < 10 ; i++) {
-				if ((System.currentTimeMillis() >= bombs[i].getDeployTime() + 4000) && (bombs[i].getPlacedBomb() == true)) {
-					bombCounter--;
-					currBombs--;
-					//				for (int i=0; i<10; i++) {
-					//					board.gb_println(explosionTime[i] + "  ");
-					//				}
+			for (int i=0 ; i < 100 ; i++) {
+				if ((System.currentTimeMillis() >= bombs[i].getDeployTime() + 4000) && (bombs[i].getPlacedBomb() == true)) {			
 					board.gb_setSpriteVisible(i, false);
 					bombs[i].setPlacedBomb(false);
 					bombs[i].setExpTime(System.currentTimeMillis());
 					bombs[i].setCurrExplosion(true);
 					bombs[i].setExpPosition(bombs[i].getXBomb(), bombs[i].getYBomb());
-					board.gb_println(bombs[i].getDeployTime() + "  ");
+					bombCounter--;
+					currBombs--;
 				}
 			}
-			for (int i=1; i<10; i++){	
+			for (int i=0; i<100; i++){	
 				bombs[i].setExplosion(board, bombs[i].getXExp(), bombs[i].getYExp(), bombs[i].getExpTime(), bombs[i].getCurrExplosion(), thisBoard);
 			}
-
-
+			
+			//Bonus effects:
+			if (thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)].equals("bomb")) {
+				this.maxBombs++;
+				thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)] = " ";
+				board.gb_setSpriteVisible(500+(Math.min(((x1 + 4) / 10), MainFP.SIZE)+Math.min((((y1 + 8) / 10)), MainFP.SIZE)), false);
+				board.gb_println("Max bombs increased in 1");
+				
+			}
+			
+			if (thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)].equals("fire")) {
+				bombRange++;
+				for (int i=0; i<100; i++) {				
+					bombs[i].setRange(bombRange);
+				}
+				thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)] = " ";
+				board.gb_setSpriteVisible(550, false);
+				board.gb_println("Bomb range increased in 1");
+			}
+			
+			if (thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)].equals("special fire")) {
+				bombRange=5;
+				for (int i=0; i<100; i++) {
+					bombs[i].setRange(bombRange);
+				}
+				thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)] = " ";
+				board.gb_setSpriteVisible(551, false);
+				board.gb_println("Bomb range set to maximum");
+			}
+			
+			if (thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)].equals("remote control")) {
+				this.remoteControl = true;
+				thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)] = " ";
+				board.gb_setSpriteVisible(552, false);
+				board.gb_println("Remote control obtained. Press TAB to make all bombs explode simustaneously");
+			}
+			
+			if (thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)].equals("skate")) {
+				this.speed=speed+1;
+				thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)] = " ";
+				board.gb_setSpriteVisible(553, false);
+				board.gb_println("Speed increased in 1");
+			}
+			
+			if (thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)].equals("geta")) {
+				this.speed=1;
+				thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)] = " ";
+				board.gb_setSpriteVisible(554, false);
+				board.gb_println("Speed decreased to minimum");
+			}
+			
+			if (thisBoard.getBonusArray()[Math.min(((x1 + 4) / 10), MainFP.SIZE)] [Math.min((((y1 + 8) / 10)), MainFP.SIZE)].equals("door")) {
+				checkDoor(thisBoard);
+				if (doorOpen==false) {
+					board.gb_println("Door closed: enemies alive!");
+				}
+			}
+			
 			Thread.sleep(50);
-		} while (alive==true);
+		} while (doorOpen == false);
 		///////////////// END OF MAIN LOOP ////////////////////////////////////
 	}
 
@@ -162,6 +221,20 @@ public class Player {
 		case "up": return "bomberman101.png";
 		default: return "bomberman111.png";		//default is "down"
 		}
+		}
+	}
+	
+	private void checkDoor(Block thisBoard) {
+		doorOpen = true; 
+		for (int i=0; i<MainFP.SIZE; i++) {
+			for (int ii=0; ii<MainFP.SIZE; ii++) {
+				if ((thisBoard.getBrickArray()[i][ii] == 0 || thisBoard.getBrickArray()[i][ii] == 2) && doorOpen == true) {
+					doorOpen = true;
+				}
+				else {
+					doorOpen = false;
+				}
+			}
 		}
 	}
 }

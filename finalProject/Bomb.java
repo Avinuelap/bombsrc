@@ -3,7 +3,7 @@ package finalProject;
 import edu.uc3m.game.GameBoardGUI;
 
 public class Bomb {
-	private byte range = 1;
+	int range = 1;
 	private int xBomb, yBomb;			//Bomb coordinates on the board
 	private int xExp, yExp;				//Coordinates for the explosion
 	private long deployTime;
@@ -32,7 +32,7 @@ public class Bomb {
 		if ((System.currentTimeMillis() <= explosionTime+1000) && (explosion ==true)) {
 			/////////////// Starting explosions //////////////////////////////////////////////////
 			//Center
-			//board.gb_setSquareImage(xBomb, yBomb, cAnimation());
+			
 			
 			
 			for (int i = 1; i <= this.range; i++) {
@@ -85,14 +85,58 @@ public class Bomb {
 		}else {		
 ////////////// Ending explosions /////////////////////////////////////////////////////
 			//Center
-			board.gb_setSquareImage(xBomb, yBomb, null);
-
+			
 			
 			for (int i = 1; i <= this.range; i++) {
+				board.gb_setSquareImage(xBomb, yBomb, null);
 				//Right
 				if (xBomb+i<MainFP.SIZE-1) {
 					if (thisBoard.getBrickArray()[xBomb+1][yBomb]!=2) {
 						board.gb_setSquareImage(xBomb+ i, yBomb, null);
+						///////////// BONUS //////////////////////////////////////////////////////
+						if (thisBoard.getBonusArray()[xBomb+i][yBomb]!=" ") {
+							if (thisBoard.getBonusArray()[xBomb+i][yBomb] == "bomb") {					
+								board.gb_addSprite(500+(xBomb+i)+yBomb, "Bombupsprite.png", true);
+								board.gb_moveSprite(500+(xBomb+i)+yBomb, xBomb+i, yBomb);
+								board.gb_setSpriteVisible(500+(xBomb+i)+yBomb, true);
+							}
+							
+							if (thisBoard.getBonusArray()[xBomb+i][yBomb] == "fire") {								
+								board.gb_addSprite(550, "Fireupsprite.png", true);
+								board.gb_moveSprite(550, xBomb+i, yBomb);
+								board.gb_setSpriteVisible(550, true);
+							}
+							
+							if (thisBoard.getBonusArray()[xBomb+i][yBomb] == "special fire") {								
+								board.gb_addSprite(551, "Fullfiresprite.png", true);
+								board.gb_moveSprite(551, xBomb+i, yBomb);
+								board.gb_setSpriteVisible(551, true);
+							}
+							
+							if (thisBoard.getBonusArray()[xBomb+i][yBomb] == "remote control") {								
+								board.gb_addSprite(552, "Remote_Control_2.png", true);
+								board.gb_moveSprite(552, xBomb+i, yBomb);
+								board.gb_setSpriteVisible(552, true);
+							}
+							
+							if (thisBoard.getBonusArray()[xBomb+i][yBomb] == "skate") {								
+								board.gb_addSprite(553, "Skatesprite.png", true);
+								board.gb_moveSprite(553, xBomb+i, yBomb);
+								board.gb_setSpriteVisible(553, true);
+							}
+							if (thisBoard.getBonusArray()[xBomb+i][yBomb] == "geta") {						
+								board.gb_addSprite(554, "Getasprite.png", true);
+								board.gb_moveSprite(554, xBomb+i, yBomb);
+								board.gb_setSpriteVisible(554, true);
+							}		
+							
+							if (thisBoard.getBonusArray()[xBomb+i][yBomb] == "door") {						
+								board.gb_addSprite(555, "DoorClosed.png", false);
+								board.gb_moveSprite(555, xBomb+i, yBomb);
+								board.gb_setSpriteVisible(555, true);
+							}	
+						}
+						///////////////////////////////////////////////////////////////////////////
 						if (thisBoard.getBrickArray()[xBomb+i][yBomb]==1) {
 							thisBoard.getBrickArray()[xBomb+i][yBomb]=0;
 						}
@@ -103,6 +147,52 @@ public class Bomb {
 				if (xBomb-i>0) {
 					if (thisBoard.getBrickArray()[xBomb-1][yBomb]!=2) {
 						board.gb_setSquareImage(xBomb- i, yBomb, null);
+						
+						///////////// BONUS //////////////////////////////////////////////////////
+						if (thisBoard.getBonusArray()[xBomb-i][yBomb]!=" ") {
+							if (thisBoard.getBonusArray()[xBomb-i][yBomb] == "bomb") {				
+								board.gb_addSprite(500+(xBomb-i)+yBomb, "Bombupsprite.png", true);
+								board.gb_moveSprite(500+(xBomb-i)+yBomb, xBomb-i, yBomb);
+								board.gb_setSpriteVisible(500+(xBomb-i)+yBomb, true);
+							}
+							
+							if (thisBoard.getBonusArray()[xBomb-i][yBomb] == "fire") {							
+								board.gb_addSprite(550, "Fireupsprite.png", true);
+								board.gb_moveSprite(550, xBomb-i, yBomb);
+								board.gb_setSpriteVisible(550, true);
+							}
+							
+							if (thisBoard.getBonusArray()[xBomb-i][yBomb] == "special fire") {						
+								board.gb_addSprite(551, "Fullfiresprite.png", true);
+								board.gb_moveSprite(551, xBomb-i, yBomb);
+								board.gb_setSpriteVisible(551, true);
+							}
+							
+							if (thisBoard.getBonusArray()[xBomb-i][yBomb] == "remote control") {								
+								board.gb_addSprite(552, "Remote_Control_2.png", true);
+								board.gb_moveSprite(552, xBomb-i, yBomb);
+								board.gb_setSpriteVisible(552, true);
+							}
+							
+							if (thisBoard.getBonusArray()[xBomb-i][yBomb] == "skate") {			
+								board.gb_addSprite(553, "Skatesprite.png", true);
+								board.gb_moveSprite(553, xBomb-i, yBomb);
+								board.gb_setSpriteVisible(553, true);
+							}
+							
+							if (thisBoard.getBonusArray()[xBomb-i][yBomb] == "geta") {					
+								board.gb_addSprite(554, "Getasprite.png", true);
+								board.gb_moveSprite(554, xBomb-i, yBomb);
+								board.gb_setSpriteVisible(554, true);
+							}
+							
+							if (thisBoard.getBonusArray()[xBomb-i][yBomb] == "door") {						
+								board.gb_addSprite(555, "DoorClosed.png", false);
+								board.gb_moveSprite(555, xBomb-i, yBomb);
+								board.gb_setSpriteVisible(555, true);
+							}	
+						}
+						//////////////////////////////////////////////////////////////////////////
 						if (thisBoard.getBrickArray()[xBomb-i][yBomb]==1) {
 							thisBoard.getBrickArray()[xBomb-i][yBomb]=0;
 
@@ -114,6 +204,48 @@ public class Bomb {
 				if (yBomb-i>0) {
 					if (thisBoard.getBrickArray()[xBomb][yBomb-1]!=2) {					
 						board.gb_setSquareImage(xBomb, yBomb-i, null);
+						
+						///////////// BONUS //////////////////////////////////////////////////////
+						if (thisBoard.getBonusArray()[xBomb][yBomb-i]!=" ") {
+							if (thisBoard.getBonusArray()[xBomb][yBomb-i] == "bomb") {				
+								board.gb_addSprite(500+xBomb+(yBomb-i), "Bombupsprite.png", true);
+								board.gb_moveSprite(500+xBomb+(yBomb-i), xBomb, yBomb-i);
+								board.gb_setSpriteVisible(500+(xBomb)+yBomb-i, true);
+							}
+							if (thisBoard.getBonusArray()[xBomb][yBomb-i] == "fire") {							
+								board.gb_addSprite(550, "Fireupsprite.png", true);
+								board.gb_moveSprite(550, xBomb, yBomb-i);
+								board.gb_setSpriteVisible(550, true);
+							}
+							if (thisBoard.getBonusArray()[xBomb][yBomb-i] == "special fire") {						
+								board.gb_addSprite(551, "Fullfiresprite.png", true);
+								board.gb_moveSprite(551, xBomb, yBomb-i);
+								board.gb_setSpriteVisible(551, true);
+							}
+							if (thisBoard.getBonusArray()[xBomb][yBomb-i] == "remote control") {								
+								board.gb_addSprite(552, "Remote_Control_2.png", true);
+								board.gb_moveSprite(552, xBomb, yBomb-i);
+								board.gb_setSpriteVisible(552, true);
+							}
+							if (thisBoard.getBonusArray()[xBomb][yBomb-i] == "skate") {			
+								board.gb_addSprite(553, "Skatesprite.png", true);
+								board.gb_moveSprite(553, xBomb, yBomb-i);
+								board.gb_setSpriteVisible(553, true);
+							}
+							if (thisBoard.getBonusArray()[xBomb][yBomb-i] == "geta") {					
+								board.gb_addSprite(554, "Getasprite.png", true);
+								board.gb_moveSprite(554, xBomb, yBomb-i);
+								board.gb_setSpriteVisible(554, true);
+							}
+							
+							if (thisBoard.getBonusArray()[xBomb][yBomb-1] == "door") {						
+								board.gb_addSprite(555, "DoorClosed.png", false);
+								board.gb_moveSprite(555, xBomb, yBomb-1);
+								board.gb_setSpriteVisible(555, true);
+							}	
+						}
+						/////////////////////////////////////////////////////////////////////
+						
 						if (thisBoard.getBrickArray()[xBomb][yBomb-i]==1) {
 							thisBoard.getBrickArray()[xBomb][yBomb-i]=0;
 						}
@@ -124,6 +256,46 @@ public class Bomb {
 				if (yBomb+i<MainFP.SIZE-1) {
 					if (thisBoard.getBrickArray()[xBomb][yBomb+1]!=2) {	
 						board.gb_setSquareImage(xBomb, yBomb+i, null);
+						///////// BONUS ///////////////////////////////////////////////////////////
+						if (thisBoard.getBonusArray()[xBomb][yBomb+i]!=" ") {
+							if (thisBoard.getBonusArray()[xBomb][yBomb+i] == "bomb") {				
+								board.gb_addSprite(500+xBomb+(yBomb+i), "Bombupsprite.png", true);
+								board.gb_moveSprite(500+xBomb+(yBomb+i), xBomb, yBomb+i);
+								board.gb_setSpriteVisible(500+(xBomb)+yBomb+i, true);
+							}
+							if (thisBoard.getBonusArray()[xBomb][yBomb+i] == "fire") {							
+								board.gb_addSprite(550, "Fireupsprite.png", true);
+								board.gb_moveSprite(550, xBomb, yBomb+i);
+								board.gb_setSpriteVisible(550, true);
+							}
+							if (thisBoard.getBonusArray()[xBomb][yBomb+i] == "special fire") {						
+								board.gb_addSprite(551, "Fullfiresprite.png", true);
+								board.gb_moveSprite(551, xBomb, yBomb+i);
+								board.gb_setSpriteVisible(551, true);
+							}
+							if (thisBoard.getBonusArray()[xBomb][yBomb+i] == "remote control") {								
+								board.gb_addSprite(552, "Remote_Control_2.png", true);
+								board.gb_moveSprite(552, xBomb, yBomb+i);
+								board.gb_setSpriteVisible(552, true);
+							}
+							if (thisBoard.getBonusArray()[xBomb][yBomb+i] == "skate") {			
+								board.gb_addSprite(553, "Skatesprite.png", true);
+								board.gb_moveSprite(553, xBomb, yBomb+i);
+								board.gb_setSpriteVisible(553, true);
+							}
+							if (thisBoard.getBonusArray()[xBomb][yBomb+i] == "geta") {					
+								board.gb_addSprite(554, "Getasprite.png", true);
+								board.gb_moveSprite(554, xBomb, yBomb+i);
+								board.gb_setSpriteVisible(554, true);
+							}		
+							
+							if (thisBoard.getBonusArray()[xBomb][yBomb+i] == "door") {						
+								board.gb_addSprite(555, "DoorClosed.png", false);
+								board.gb_moveSprite(555, xBomb, yBomb+i);
+								board.gb_setSpriteVisible(555, true);
+							}	
+						}
+						////////////////////////////////////////////////////////////
 						if (thisBoard.getBrickArray()[xBomb][yBomb+i]==1) {
 							thisBoard.getBrickArray()[xBomb][yBomb+i]=0;
 						}
@@ -190,6 +362,14 @@ public class Bomb {
 	}
 	public boolean getCurrExplosion(){
 		return this.explosion;
+	}
+	
+	//5. Range
+	public void setRange(int x) {
+		this.range = x;
+	}
+	public int getRange() {
+		return this.range;
 	}
 	
 	/////////////////Methods for animations:
@@ -271,5 +451,50 @@ public class Bomb {
 		}
 		return "explosion_S"+expCounter+".gif";
 	}
+	
+	
+//	//Checking bonus:
+//	private void checkBonus(int x, int y, Block thisBoard, GameBoardGUI board) {
+//		int ID;
+//		if (thisBoard.getBonusArray()[x][y] == "bomb") {
+//			ID= 500+x+y;
+//			board.gb_addSprite(ID, "Bombupsprite.png", true);
+//			board.gb_moveSprite(ID, x, y);
+//			board.gb_setSpriteVisible(ID, true);
+//		}
+//		if (thisBoard.getBonusArray()[x][y] == "fire") {
+//			ID=  550;
+//			board.gb_addSprite(ID, "Fireupsprite.png", true);
+//			board.gb_moveSprite(ID, x, y);
+//			board.gb_setSpriteVisible(ID, true);
+//		}
+//		if (thisBoard.getBonusArray()[x][y] == "special fire") {
+//			ID= 551;
+//			board.gb_addSprite(ID, "Fullfiresprite.png", true);
+//			board.gb_moveSprite(ID, x, y);
+//			board.gb_setSpriteVisible(ID, true);
+//		}
+//		if (thisBoard.getBonusArray()[x][y] == "remote control") {
+//			ID= 552;
+//			board.gb_addSprite(ID, "Remote_Control_2.png", true);
+//			board.gb_moveSprite(ID, x, y);
+//			board.gb_setSpriteVisible(ID, true);
+//		}
+//		if (thisBoard.getBonusArray()[x][y] == "skate") {
+//			ID= 553;
+//			board.gb_addSprite(ID, "Skatesprite.png", true);
+//			board.gb_moveSprite(ID, x, y);
+//			board.gb_setSpriteVisible(ID, true);
+//		}
+//		if (thisBoard.getBonusArray()[x][y] == "skate") {
+//			ID= 554;
+//			board.gb_addSprite(ID, "Getasprite.png", true);
+//			board.gb_moveSprite(ID, x, y);
+//			board.gb_setSpriteVisible(ID, true);
+//		}
+//		else {
+//			System.out.println("PERO KE COÑO PASAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+//		}
+//	}
 }
 
